@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ros2_bot</name>
+  <version>0.0.0</version>
+  <description>ROS2 bot</description>
+  <maintainer email="shengwen1997.tw@gmail.com">Shengwen Cheng</maintainer>
+  <license>MIT License</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <buildtool_depend>rosidl_default_generators</buildtool_depend>
+
+  <build_depend>example_interfaces</build_depend>
+  <build_depend>rcl</build_depend>
+  <build_depend>rmw_implementation</build_depend>
+
+  <exec_depend>rclcpp</exec_depend>
+  <exec_depend>example_interfaces</exec_depend>
+  <exec_depend>rcl</exec_depend>
+  <exec_depend>rmw_implementation</exec_depend>
+  <exec_depend>rosidl_default_runtime</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
