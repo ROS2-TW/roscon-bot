@@ -14,28 +14,46 @@ find_package(rmw_implementation_cmake REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 
-function(custom_executable subfolder target)
-  add_executable(${target}${target_suffix}
-    src/${subfolder}/${target}.cpp)
-  # TODO(dhood): Allow dependencies to be listed in arbitrary order without affecting the selected
-  # typesupport. See https://github.com/ros2/ros2/issues/253
-  ament_target_dependencies(${target}${target_suffix}
-    "std_msgs"
-    "rclcpp"
-    "example_interfaces")
-  install(TARGETS ${target}${target_suffix}
-    DESTINATION bin)
-endfunction()
+find_package(OpenCV REQUIRED)
 
-macro(targets)
-  if(NOT target_suffix STREQUAL "")
-    get_rclcpp_information("${rmw_implementation}" "rclcpp${target_suffix}")
-  endif()
+set(CMAKE_MODULE_PATH "/usr/local/lib/cmake;${CMAKE_MODULE_PATH}")
+find_package(raspicam REQUIRED)
 
-  # Examples of Publish/Subscribe with Topics
-  custom_executable(hello_world hello)
-endmacro()
+#######################################################################################
+# Hello World node
 
-call_for_each_rmw_implementation(targets GENERATE_DEFAULT)
+set(
+ HELLO_NODE_SRC
+ ./src/hello_world/hello.cpp
+)
+
+add_executable(hello_world ${HELLO_NODE_SRC})
+ament_target_dependencies(hello_world
+  "std_msgs"
+  "rclcpp"
+  "sensor_msgs"
+)
+install(TARGETS hello_world DESTINATION bin)
+
+#######################################################################################
+# Camera node
+
+set(
+ CAMERA_NODE_SRC
+  ./src/camera_node/camera_node.cpp
+)
+
+add_executable(camera_node ${CAMERA_NODE_SRC})
+ament_target_dependencies(camera_node
+  "std_msgs"
+  "rclcpp"
+  "raspicam"
+  "sensor_msgs"
+  "OpenCV"
+)
+target_link_libraries(camera_node raspicam_cv raspicam)
+install(TARGETS camera_node DESTINATION bin)
+
+#######################################################################################
 
 ament_package()
