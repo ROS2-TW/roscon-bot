@@ -43,6 +43,12 @@ set(
   ./src/camera_node/camera_node.cpp
 )
 
+set(
+  CAMERA_NODE_INC
+  ./src/camera_node
+)
+
+include_directories(${CAMERA_NODE_INC})
 add_executable(camera_node ${CAMERA_NODE_SRC})
 ament_target_dependencies(camera_node
   "std_msgs"
