@@ -20,24 +20,25 @@ set(CMAKE_MODULE_PATH "/usr/local/lib/cmake;${CMAKE_MODULE_PATH}")
 find_package(raspicam REQUIRED)
 
 #######################################################################################
-# Hello World node
+macro(targets)
 
+if(NOT target_suffix STREQUAL "")
+  get_rclcpp_information("${rmw_implementation}" "rclcpp${target_suffix}")
+endif()
+
+# Hello World node
 set(
  HELLO_NODE_SRC
  ./src/hello_world/hello.cpp
 )
 
-add_executable(hello_world ${HELLO_NODE_SRC})
-ament_target_dependencies(hello_world
-  "std_msgs"
-  "rclcpp"
-  "sensor_msgs"
-)
-install(TARGETS hello_world DESTINATION bin)
+add_executable(hello_world${target_suffix} ${HELLO_NODE_SRC})
+ament_target_dependencies(hello_world${target_suffix} "rclcpp${target_suffix}")
+ament_target_dependencies(hello_world${target_suffix} "std_msgs")
+ament_target_dependencies(hello_world${target_suffix} "sensor_msgs")
+install(TARGETS hello_world${target_suffix} DESTINATION bin)
 
-#######################################################################################
 # Camera node
-
 set(
  CAMERA_NODE_SRC
   ./src/camera_node/camera_node.cpp
@@ -49,17 +50,18 @@ set(
 )
 
 include_directories(${CAMERA_NODE_INC})
-add_executable(camera_node ${CAMERA_NODE_SRC})
-ament_target_dependencies(camera_node
-  "std_msgs"
-  "rclcpp"
-  "raspicam"
-  "sensor_msgs"
-  "OpenCV"
-)
-target_link_libraries(camera_node raspicam_cv raspicam)
-install(TARGETS camera_node DESTINATION bin)
+add_executable(camera_node${target_suffix} ${CAMERA_NODE_SRC})
+ament_target_dependencies(camera_node${target_suffix} "rclcpp${target_suffix}")
+ament_target_dependencies(camera_node${target_suffix} "std_msgs")
+ament_target_dependencies(camera_node${target_suffix} "raspicam")
+ament_target_dependencies(camera_node${target_suffix} "sensor_msgs")
+ament_target_dependencies(camera_node${target_suffix} "OpenCV")
+target_link_libraries(camera_node${target_suffix} raspicam_cv raspicam)
+install(TARGETS camera_node${target_suffix} DESTINATION bin)
 
+endmacro()
 #######################################################################################
+
+call_for_each_rmw_implementation(targets GENERATE_DEFAULT)
 
 ament_package()

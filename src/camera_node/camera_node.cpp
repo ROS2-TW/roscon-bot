@@ -23,7 +23,7 @@ void convert_mat_to_ros_image(cv::Mat& frame, sensor_msgs::msg::Image& msg)
 	msg.data.assign(frame.datastart, frame.dataend);
 }
 
-int main()
+int main(int argc, char * argv[])
 {
 	raspicam::RaspiCam_Cv camera;
 
@@ -35,10 +35,12 @@ int main()
 	cv::Mat frame;
 
 	//Initialize ROS2 RCL
+	rclcpp::init(argc, argv);
+
 	auto node = rclcpp::node::Node::make_shared("camera");
+
 	rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
 	custom_qos_profile.depth = 7;
-
 	auto image_publisher = node->create_publisher<sensor_msgs::msg::Image>("raw_image", custom_qos_profile);
 	rclcpp::WallRate loop_rate(90);
 
